@@ -29,141 +29,159 @@
     {{-- ============================================================ --}}
     {{-- HEADER --}}
     {{-- ============================================================ --}}
-    <div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+    <!-- Header -->
+    <div class="mb-8 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
         <div>
-            <h1 class="text-3xl font-extrabold text-[#362773] tracking-tight">Manajemen Pengguna</h1>
-            <p class="text-slate-500 mt-1.5 font-medium">Kelola akses untuk Administrator dan Petugas Sistem</p>
+            <h1 class="text-2xl md:text-4xl font-black text-[#362773] tracking-tight">Manajemen Pengguna</h1>
+            <p class="text-slate-500 mt-1.5 font-medium text-sm md:text-base">Kelola akses untuk Administrator dan Petugas Sistem</p>
         </div>
         <button onclick="document.getElementById('addModal').classList.remove('hidden')"
-                class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-indigo-500/30 transition-all flex items-center gap-2 transform hover:-translate-y-0.5">
+                class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-4 rounded-2xl font-bold shadow-lg shadow-indigo-600/20 transition-all flex items-center justify-center gap-2 active:scale-95">
             <i class="fa-solid fa-plus"></i> Tambah Pengguna
         </button>
     </div>
 
-    {{-- ============================================================ --}}
-    {{-- SEARCH & FILTER BAR --}}
-    {{-- ============================================================ --}}
-    <div class="bg-white rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 overflow-hidden">
 
-        <div class="p-6 border-b border-slate-100 bg-slate-50/50">
-            <form method="GET" action="{{ route('admin.users') }}" class="flex flex-col sm:flex-row gap-3 items-center">
-                <div class="relative flex-1 w-full sm:max-w-xs">
+    <!-- Search & Filter Bar -->
+    <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden mb-8">
+        <div class="p-5 md:p-6 bg-slate-50/30">
+            <form method="GET" action="{{ route('admin.users') }}" class="flex flex-col md:flex-row gap-4">
+                <div class="relative flex-1">
                     <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
                     <input type="text" name="search" value="{{ request('search') }}"
-                           placeholder="Cari nama, username, atau email..."
-                           class="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all shadow-sm">
+                           placeholder="Cari nama, username..."
+                           class="w-full pl-11 pr-4 py-3 bg-white border border-slate-100 rounded-2xl text-sm font-bold focus:outline-none focus:border-indigo-500 transition-all shadow-sm">
                 </div>
-                <select name="role" onchange="this.form.submit()"
-                        class="bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-600 focus:outline-none shadow-sm cursor-pointer">
-                    <option value="all"   {{ request('role', 'all') === 'all'  ? 'selected' : '' }}>Semua Peran</option>
-                    <option value="admin" {{ request('role') === 'admin'       ? 'selected' : '' }}>Administrator</option>
-                    <option value="staff" {{ request('role') === 'staff'       ? 'selected' : '' }}>Petugas</option>
-                </select>
-                <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl font-bold text-sm transition shadow-md shadow-indigo-500/20">
-                    <i class="fa-solid fa-search mr-1"></i> Cari
-                </button>
-                @if(request('search') || (request('role') && request('role') !== 'all'))
-                <a href="{{ route('admin.users') }}" class="text-sm text-slate-500 hover:text-slate-800 font-medium underline">Reset</a>
-                @endif
-                <p class="text-sm text-slate-400 font-medium ml-auto">{{ $users->count() }} pengguna ditemukan</p>
+                <div class="flex gap-3">
+                    <select name="role" onchange="this.form.submit()"
+                            class="flex-1 md:w-48 bg-white border border-slate-100 rounded-2xl px-4 py-3 text-sm font-bold text-slate-600 focus:outline-none shadow-sm cursor-pointer hover:border-indigo-200 transition-colors">
+                        <option value="all">Semua Peran</option>
+                        <option value="admin" {{ request('role') === 'admin' ? 'selected' : '' }}>Administrator</option>
+                        <option value="staff" {{ request('role') === 'staff' ? 'selected' : '' }}>Petugas</option>
+                    </select>
+                    @if(request('search') || (request('role') && request('role') !== 'all'))
+                        <a href="{{ route('admin.users') }}" class="flex items-center justify-center px-4 bg-slate-100 text-slate-400 hover:text-slate-600 rounded-2xl transition-colors" title="Reset">
+                            <i class="fa-solid fa-rotate-left"></i>
+                        </a>
+                    @endif
+                </div>
             </form>
         </div>
+    </div>
 
-        {{-- ============================================================ --}}
-        {{-- USERS TABLE --}}
-        {{-- ============================================================ --}}
-        <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse whitespace-nowrap">
+
+    <!-- Users View Hybrid -->
+    <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+        
+        <!-- Desktop Table -->
+        <div class="hidden lg:block overflow-x-auto">
+            <table class="w-full text-left border-collapse">
                 <thead>
-                    <tr class="bg-white text-slate-400 text-xs uppercase tracking-widest border-b border-slate-100">
-                        <th class="px-8 py-5 font-bold">Profil Pengguna</th>
-                        <th class="px-8 py-5 font-bold">Username</th>
-                        <th class="px-8 py-5 font-bold">Peran</th>
-                        <th class="px-8 py-5 font-bold">Terdaftar</th>
-                        <th class="px-8 py-5 font-bold">Status</th>
-                        <th class="px-8 py-5 font-bold text-center">Aksi</th>
+                    <tr class="bg-slate-50/50 text-slate-400 text-[10px] uppercase tracking-[0.2em] border-b border-slate-100">
+                        <th class="px-8 py-5 font-black">Profil Pengguna</th>
+                        <th class="px-8 py-5 font-black">Username</th>
+                        <th class="px-8 py-5 font-black text-center">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="text-sm text-slate-700 divide-y divide-slate-50">
                     @forelse($users as $user)
-                    <tr class="hover:bg-slate-50/80 transition {{ !$user->email_verified_at ? 'opacity-60' : '' }}">
-                        {{-- Avatar + Name --}}
-                        <td class="px-8 py-5">
-                            <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shadow-md
-                                    {{ $user->role === 'admin' ? 'bg-indigo-900 text-white' : 'bg-blue-100 text-blue-600' }}">
-                                    {{ strtoupper(substr($user->name, 0, 1)) }}
+                        <tr class="hover:bg-slate-50/50 transition-colors group">
+                            <td class="px-8 py-6">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-2xl flex items-center justify-center font-black text-lg shadow-sm border border-slate-100 transition-all group-hover:scale-110
+                                        {{ $user->role === 'admin' ? 'bg-indigo-600 text-white' : 'bg-white text-indigo-600' }}">
+                                        {{ strtoupper(substr($user->name, 0, 1)) }}
+                                    </div>
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <h4 class="font-bold text-slate-800 text-base">{{ $user->name }}</h4>
+                                            <span class="px-2 py-0.5 rounded-md text-[9px] font-black tracking-widest uppercase border {{ $user->role === 'admin' ? 'bg-indigo-50 text-indigo-600 border-indigo-100' : 'bg-slate-50 text-slate-400 border-slate-100' }}">
+                                                {{ $user->role }}
+                                            </span>
+                                        </div>
+                                        <p class="text-xs text-slate-400 font-medium mt-0.5 italic">{{ $user->email }}</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h4 class="font-bold text-slate-800 text-base">{{ $user->name }}</h4>
-                                    <p class="text-xs text-slate-500">{{ $user->email }}</p>
+                            </td>
+                            <td class="px-8 py-6">
+                                <span class="font-bold text-slate-500 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100 text-xs">@ {{ $user->username }}</span>
+                            </td>
+                            <td class="px-8 py-6">
+                                <div class="flex items-center justify-center gap-2">
+                                    <button onclick="openEditModal({{ $user->id }}, '{{ addslashes($user->name) }}', '{{ $user->username }}', '{{ $user->email }}', '{{ $user->role }}')"
+                                            class="w-10 h-10 rounded-xl bg-slate-50 text-slate-400 hover:bg-indigo-600 hover:text-white transition-all flex items-center justify-center shadow-sm">
+                                        <i class="fa-solid fa-pen-to-square text-xs"></i>
+                                    </button>
+                                    @if($user->id !== auth()->id())
+                                        <button onclick="openDeleteModal({{ $user->id }}, '{{ addslashes($user->name) }}')"
+                                                class="w-10 h-10 rounded-xl bg-slate-50 text-slate-400 hover:bg-rose-500 hover:text-white transition-all flex items-center justify-center shadow-sm">
+                                            <i class="fa-solid fa-trash-can text-xs"></i>
+                                        </button>
+                                    @endif
                                 </div>
-                            </div>
-                        </td>
-
-                        {{-- Username --}}
-                        <td class="px-8 py-5">
-                            <span class="font-mono text-sm font-medium text-slate-600 bg-slate-100 px-3 py-1 rounded-lg">{{ $user->username }}</span>
-                        </td>
-
-                        {{-- Role Badge --}}
-                        <td class="px-8 py-5">
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border
-                                {{ $user->role === 'admin' ? 'bg-indigo-50 text-indigo-700 border-indigo-100' : 'bg-slate-100 text-slate-600 border-slate-200' }}">
-                                <i class="{{ $user->role === 'admin' ? 'fa-solid fa-shield-halved' : 'fa-solid fa-user-tie' }}"></i>
-                                {{ $user->role === 'admin' ? 'Administrator' : 'Petugas' }}
-                            </span>
-                        </td>
-
-                        {{-- Date --}}
-                        <td class="px-8 py-5 text-slate-500 font-medium">
-                            {{ $user->created_at->format('d M Y') }}
-                        </td>
-
-                        {{-- Status Toggle --}}
-                        <td class="px-8 py-5">
-                            <form method="POST" action="{{ route('admin.users.toggle', $user) }}">
-                                @csrf @method('PATCH')
-                                <button type="submit" class="flex items-center gap-2 hover:opacity-80 transition" title="Klik untuk ubah status">
-                                    <span class="w-2.5 h-2.5 rounded-full {{ $user->email_verified_at ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]' : 'bg-slate-300' }}"></span>
-                                    <span class="font-bold {{ $user->email_verified_at ? 'text-slate-600' : 'text-slate-400' }}">
-                                        {{ $user->email_verified_at ? 'Aktif' : 'Nonaktif' }}
-                                    </span>
-                                </button>
-                            </form>
-                        </td>
-
-                        {{-- Actions --}}
-                        <td class="px-8 py-5 text-center">
-                            {{-- Edit Button --}}
-                            <button onclick="openEditModal({{ $user->id }}, '{{ addslashes($user->name) }}', '{{ $user->username }}', '{{ $user->email }}', '{{ $user->role }}')"
-                                    class="w-9 h-9 rounded-xl bg-slate-50 text-slate-400 hover:bg-indigo-50 hover:text-indigo-600 transition-colors mx-1">
-                                <i class="fa-solid fa-pen"></i>
-                            </button>
-                            {{-- Delete Button (cannot delete self) --}}
-                            @if($user->id !== auth()->id())
-                            <button onclick="openDeleteModal({{ $user->id }}, '{{ addslashes($user->name) }}')"
-                                    class="w-9 h-9 rounded-xl bg-slate-50 text-slate-400 hover:bg-rose-50 hover:text-rose-600 transition-colors mx-1">
-                                <i class="fa-solid fa-trash-can"></i>
-                            </button>
-                            @endif
-                        </td>
-                    </tr>
+                            </td>
+                        </tr>
                     @empty
-                    <tr>
-                        <td colspan="6" class="px-8 py-16 text-center">
-                            <div class="flex flex-col items-center gap-3 text-slate-400">
-                                <i class="fa-solid fa-users-slash text-4xl text-slate-300"></i>
-                                <p class="font-bold text-slate-500">Tidak ada pengguna ditemukan</p>
-                                <p class="text-sm">Coba ubah kata kunci pencarian atau tambah pengguna baru.</p>
-                            </div>
-                        </td>
-                    </tr>
+                        <tr>
+                            <td colspan="3" class="px-8 py-16 text-center">
+                                <div class="flex flex-col items-center gap-3">
+                                    <i class="fa-solid fa-users-slash text-4xl text-slate-100"></i>
+                                    <p class="font-bold text-slate-300">Data pengguna kosong</p>
+                                </div>
+                            </td>
+                        </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
+
+        <!-- Mobile Cards -->
+        <div class="lg:hidden divide-y divide-slate-50">
+            @forelse($users as $user)
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-2xl flex items-center justify-center font-black text-lg shadow-sm border border-slate-100
+                                {{ $user->role === 'admin' ? 'bg-indigo-600 text-white' : 'bg-slate-50 text-indigo-600' }}">
+                                {{ strtoupper(substr($user->name, 0, 1)) }}
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-base leading-tight">{{ $user->name }}</h4>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">@ {{ $user->username }}</p>
+                            </div>
+                        </div>
+                        <span class="px-3 py-1 rounded-full text-[9px] font-black tracking-widest uppercase shadow-sm {{ $user->role === 'admin' ? 'bg-[#362773] text-white' : 'bg-slate-100 text-slate-500' }}">
+                            {{ $user->role }}
+                        </span>
+                    </div>
+
+                    <div class="bg-slate-50/50 rounded-2xl p-4 mb-6 border border-slate-50">
+                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Email Address</p>
+                        <p class="text-sm font-bold text-slate-700 truncate italic">{{ $user->email }}</p>
+                    </div>
+
+                    <div class="flex gap-3">
+                        <button onclick="openEditModal({{ $user->id }}, '{{ addslashes($user->name) }}', '{{ $user->username }}', '{{ $user->email }}', '{{ $user->role }}')"
+                                class="flex-1 bg-white border border-slate-100 text-slate-600 font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 text-sm shadow-sm active:scale-95">
+                            <i class="fa-solid fa-pen text-indigo-500"></i> Edit Akun
+                        </button>
+                        @if($user->id !== auth()->id())
+                            <button onclick="openDeleteModal({{ $user->id }}, '{{ addslashes($user->name) }}')"
+                                    class="w-12 h-12 bg-rose-50 text-rose-500 rounded-xl transition-all flex items-center justify-center border border-rose-100 active:scale-95">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        @endif
+                    </div>
+                </div>
+            @empty
+                <div class="p-12 text-center">
+                    <i class="fa-solid fa-users-slash text-4xl text-slate-200 mb-3 block"></i>
+                    <p class="text-slate-400 font-bold">Data kosong</p>
+                </div>
+            @endforelse
+        </div>
     </div>
+
 
     {{-- ============================================================ --}}
     {{-- ADD MODAL --}}

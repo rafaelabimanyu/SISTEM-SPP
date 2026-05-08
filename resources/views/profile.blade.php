@@ -7,32 +7,53 @@
 }">
     
     <!-- Header -->
-    <div class="mb-10 text-center">
-        <h1 class="text-3xl font-extrabold text-[#362773] tracking-tight">Profil Saya</h1>
-        <p class="text-slate-500 mt-2 font-medium">Kelola informasi pribadi dan pengaturan keamanan Anda</p>
+    <div class="mb-8 md:mb-10 text-center px-4">
+        <h1 class="text-2xl md:text-4xl font-black text-[#362773] tracking-tight">Profil Saya</h1>
+        <p class="text-slate-500 mt-2 font-medium text-sm md:text-base">Kelola informasi pribadi dan pengaturan keamanan Anda</p>
     </div>
+
 
     <!-- Success Toasts -->
-    @if(session('success_info'))
-    <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 4000)" x-cloak
-         class="fixed top-6 right-6 z-[999] flex items-center gap-3 bg-emerald-600 text-white px-6 py-4 rounded-2xl shadow-2xl">
-        <i class="fa-solid fa-check-circle text-xl"></i><span class="font-bold">{{ session('success_info') }}</span>
-    </div>
-    @endif
+    <template x-if="true">
+        <div class="fixed top-4 md:top-6 right-4 md:right-6 z-[999] space-y-3">
+            @if(session('success_info'))
+            <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 4000)" x-cloak
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0 transform translate-x-10"
+                 x-transition:enter-end="opacity-100 transform translate-x-0"
+                 x-transition:leave="transition ease-in duration-200"
+                 x-transition:leave-start="opacity-100 transform translate-x-0"
+                 x-transition:leave-end="opacity-0 transform translate-x-10"
+                 class="flex items-center gap-3 bg-emerald-600 text-white px-5 py-4 rounded-2xl shadow-2xl min-w-[280px]">
+                <i class="fa-solid fa-check-circle text-xl"></i>
+                <span class="font-bold text-sm">{{ session('success_info') }}</span>
+            </div>
+            @endif
 
-    @if(session('success_password'))
-    <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 4000)" x-cloak
-         class="fixed top-6 right-6 z-[999] flex items-center gap-3 bg-emerald-600 text-white px-6 py-4 rounded-2xl shadow-2xl">
-        <i class="fa-solid fa-lock text-xl"></i><span class="font-bold">{{ session('success_password') }}</span>
-    </div>
-    @endif
+            @if(session('success_password'))
+            <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 4000)" x-cloak
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0 transform translate-x-10"
+                 x-transition:enter-end="opacity-100 transform translate-x-0"
+                 x-transition:leave="transition ease-in duration-200"
+                 x-transition:leave-start="opacity-100 transform translate-x-0"
+                 x-transition:leave-end="opacity-0 transform translate-x-10"
+                 class="flex items-center gap-3 bg-emerald-600 text-white px-5 py-4 rounded-2xl shadow-2xl min-w-[280px]">
+                <i class="fa-solid fa-lock text-xl"></i>
+                <span class="font-bold text-sm">{{ session('success_password') }}</span>
+            </div>
+            @endif
+        </div>
+    </template>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 px-4 md:px-0">
+
         
         <!-- Left Column: Profile Card -->
         <div class="md:col-span-1">
-            <div class="bg-white rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 p-8 text-center relative overflow-hidden">
-                <div class="absolute top-0 left-0 w-full h-24 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+            <div class="bg-white rounded-3xl shadow-sm border border-slate-100 p-6 md:p-8 text-center relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-20 md:h-24 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+
                 
                 <div class="relative mt-8 mb-4">
                     <div class="w-24 h-24 mx-auto rounded-full bg-white p-1 shadow-lg flex items-center justify-center">
@@ -76,7 +97,8 @@
         <div class="md:col-span-2 space-y-6">
             
             <!-- Personal Information -->
-            <form action="{{ route('profile.update.info') }}" method="POST" class="bg-white rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 p-8 sm:p-10">
+            <form action="{{ route('profile.update.info') }}" method="POST" class="bg-white rounded-3xl shadow-sm border border-slate-100 p-6 md:p-10">
+
                 @csrf
                 <h3 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
                     <i class="fa-regular fa-id-card text-indigo-500"></i> Informasi Pribadi
@@ -108,16 +130,18 @@
                         @error('address') <p class="text-rose-500 text-xs font-bold">{{ $message }}</p> @enderror
                     </div>
 
-                    <div class="flex justify-end pt-2">
-                        <button type="submit" class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-xl shadow-lg shadow-indigo-600/30 transition transform hover:-translate-y-1">
+                    <div class="flex flex-col sm:flex-row sm:justify-end pt-2">
+                        <button type="submit" class="w-full sm:w-auto flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-8 rounded-2xl shadow-lg shadow-indigo-600/20 transition-all active:scale-95">
                             <i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan
                         </button>
                     </div>
                 </div>
             </form>
 
+
             <!-- Security Section -->
-            <form action="{{ route('profile.update.password') }}" method="POST" class="bg-white rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 p-8 sm:p-10">
+            <form action="{{ route('profile.update.password') }}" method="POST" class="bg-white rounded-3xl shadow-sm border border-slate-100 p-6 md:p-10">
+
                 @csrf
                 <h3 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
                     <i class="fa-solid fa-shield-halved text-emerald-500"></i> Keamanan
@@ -142,13 +166,14 @@
                                    class="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-xl px-5 py-3 outline-none focus:bg-white transition-all">
                         </div>
                     </div>
-                    <div class="flex justify-end pt-2">
-                        <button type="submit" class="flex items-center gap-2 bg-slate-900 hover:bg-slate-700 text-white font-bold py-3 px-8 rounded-xl shadow-md transition transform hover:-translate-y-1">
+                    <div class="flex flex-col sm:flex-row sm:justify-end pt-2">
+                        <button type="submit" class="w-full sm:w-auto flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-700 text-white font-bold py-4 px-8 rounded-2xl shadow-md transition-all active:scale-95">
                             <i class="fa-solid fa-lock"></i> Perbarui Kata Sandi
                         </button>
                     </div>
                 </div>
             </form>
+
 
         </div>
     </div>

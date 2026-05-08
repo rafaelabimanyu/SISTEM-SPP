@@ -12,60 +12,63 @@
     @endif
 
     <!-- Header -->
-    <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
+    <div class="mb-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6 px-4 md:px-0">
         <div>
-            <h1 class="text-3xl font-extrabold text-[#362773] tracking-tight">Konfigurasi SPP</h1>
-            <p class="text-slate-500 mt-1.5 font-medium">Kelola nominal dan kategori tagihan untuk seluruh siswa</p>
+            <h1 class="text-2xl md:text-4xl font-black text-[#362773] tracking-tight">Konfigurasi SPP</h1>
+            <p class="text-slate-500 mt-1.5 font-medium text-sm md:text-base">Kelola nominal dan kategori tagihan untuk seluruh siswa</p>
         </div>
         <button onclick="document.getElementById('addModal').classList.remove('hidden')" 
-                class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-indigo-500/30 transition-all flex items-center gap-2 transform hover:-translate-y-0.5">
+                class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-4 rounded-2xl font-bold shadow-lg shadow-indigo-600/20 transition-all flex items-center justify-center gap-2 active:scale-95">
             <i class="fa-solid fa-file-invoice-dollar"></i> Buat Kategori Baru
         </button>
     </div>
 
+
     <!-- Active Fees -->
-    <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+    <h2 class="text-lg md:text-xl font-bold text-slate-800 mb-6 flex items-center gap-2 px-4 md:px-0">
         <i class="fa-solid fa-circle-check text-emerald-500"></i> Kategori Tagihan Aktif
-        <span class="text-sm font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-lg ml-2">{{ $fees->count() }} aktif</span>
+        <span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full ml-2 border border-emerald-100 tracking-wider uppercase">{{ $fees->count() }} ACTIVE</span>
     </h2>
     
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-12 px-4 md:px-0">
+
         @foreach($fees as $f)
-            <div class="bg-white rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 overflow-hidden relative group transition-all">
-                <div class="absolute top-0 left-0 w-2 h-full bg-emerald-500"></div>
-                <div class="p-8">
+            <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden relative group transition-all hover:shadow-md flex flex-col">
+                <div class="absolute top-0 left-0 w-1.5 h-full bg-emerald-500 group-hover:w-2 transition-all"></div>
+                <div class="p-6 md:p-8 flex-1 flex flex-col">
                     <div class="flex justify-between items-start mb-6">
                         <div>
-                            <span class="inline-block px-3 py-1 rounded-lg text-xs font-bold mb-3 border 
-                                {{ $f->type === 'Bulanan' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-blue-50 text-blue-600 border-blue-100' }}">
+                            <span class="inline-block px-3 py-1 rounded-full text-[10px] font-bold mb-3 border tracking-wider uppercase shadow-sm
+                                {{ $f->type === 'Bulanan' ? 'bg-emerald-500 text-white border-emerald-500' : 'bg-indigo-500 text-white border-indigo-500' }}">
                                 {{ $f->type }}
                             </span>
-                            <h3 class="text-2xl font-bold text-slate-800 leading-tight">{{ $f->name }}</h3>
+                            <h3 class="text-xl md:text-2xl font-black text-slate-800 leading-tight">{{ $f->name }}</h3>
                         </div>
                         <form method="POST" action="{{ route('admin.fees.toggle', $f) }}">
                             @csrf @method('PATCH')
-                            <button type="submit" class="relative w-11 h-6 rounded-full transition-colors flex-shrink-0 bg-emerald-500">
-                                <span class="absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-all left-5"></span>
+                            <button type="submit" class="relative w-12 h-6.5 rounded-full transition-colors shrink-0 bg-emerald-500 shadow-inner">
+                                <span class="absolute top-0.5 w-5.5 h-5.5 bg-white rounded-full shadow transition-all left-6"></span>
                             </button>
                         </form>
                     </div>
                     
-                    <p class="text-sm text-slate-500 mb-6 font-medium">{{ $f->description }}</p>
+                    <p class="text-sm text-slate-500 mb-8 font-medium leading-relaxed">{{ $f->description }}</p>
                     
-                    <div class="bg-slate-50 rounded-xl p-5 border border-slate-100 flex justify-between items-center mb-6">
-                        <p class="text-sm font-bold text-slate-400 uppercase tracking-wider">Nominal Dasar</p>
-                        <p class="text-3xl font-extrabold text-slate-800">Rp {{ number_format($f->amount, 0, ',', '.') }}</p>
+                    <div class="bg-slate-50/50 rounded-2xl p-5 border border-slate-50 flex flex-col sm:flex-row justify-between items-center mb-8 gap-2">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Nominal Dasar</p>
+                        <p class="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">Rp {{ number_format($f->amount, 0, ',', '.') }}</p>
                     </div>
                     
-                    <div class="flex gap-3">
+                    <div class="mt-auto">
                         <button onclick="openEditModal({{ $f->id }}, '{{ addslashes($f->name) }}', '{{ addslashes($f->description) }}', {{ $f->amount }}, '{{ $f->type }}')" 
-                                class="flex-1 bg-white border-2 border-slate-100 hover:border-indigo-600 hover:text-indigo-600 text-slate-600 font-bold py-2.5 rounded-xl transition-colors text-sm">
-                            <i class="fa-solid fa-pen mr-2"></i> Edit Nominal
+                                class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 rounded-2xl transition-all shadow-lg shadow-slate-900/10 active:scale-95 text-sm">
+                            <i class="fa-solid fa-pen-to-square mr-2"></i> Edit Konfigurasi
                         </button>
                     </div>
                 </div>
             </div>
         @endforeach
+
     </div>
 
     <!-- Archived -->

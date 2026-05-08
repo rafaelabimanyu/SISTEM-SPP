@@ -17,11 +17,25 @@
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased h-screen overflow-hidden flex" x-data="{ sidebarOpen: true }">
+<body class="bg-slate-50 text-slate-800 antialiased h-screen overflow-hidden flex" 
+      x-data="{ sidebarOpen: window.innerWidth > 1024 }" 
+      @resize.window="if (window.innerWidth > 1024) sidebarOpen = true">
     
-    <!-- Sidebar -->
-    <aside class="bg-[#362773] text-white flex flex-col justify-between transition-all duration-300 z-20 shrink-0 relative"
-           :class="sidebarOpen ? 'w-72' : 'w-0 overflow-hidden md:w-20'">
+    <!-- Mobile Backdrop -->
+    <div x-show="sidebarOpen && window.innerWidth <= 1024" 
+         x-transition:enter="transition opacity-0 ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition opacity-100 ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         @click="sidebarOpen = false"
+         class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-30 lg:hidden" x-cloak>
+    </div>
+
+    <aside class="bg-[#362773] text-white flex flex-col justify-between transition-all duration-300 z-40 shrink-0 fixed inset-y-0 left-0 lg:relative lg:translate-x-0"
+           :class="sidebarOpen ? 'translate-x-0 w-72' : '-translate-x-full w-72 lg:w-0 lg:overflow-hidden md:lg:w-20'">
+
            
         <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-50">
             <div class="absolute -top-24 -left-24 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl"></div>
@@ -39,10 +53,14 @@
                         <p class="text-[11px] font-medium text-indigo-200 mt-0.5 uppercase tracking-wider">Manajemen Pembayaran</p>
                     </div>
                 </div>
-                <button @click="sidebarOpen = false" class="text-white/60 hover:text-white transition rounded-full p-1" x-show="sidebarOpen">
-                    <i class="fa-solid fa-xmark text-lg"></i>
+                <button @click="sidebarOpen = false" class="text-white/60 hover:text-white transition rounded-full p-2 hover:bg-white/10 lg:hidden" x-show="sidebarOpen">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+                <button @click="sidebarOpen = false" class="text-white/60 hover:text-white transition rounded-full p-1 hidden lg:block" x-show="sidebarOpen">
+                    <i class="fa-solid fa-chevron-left text-lg"></i>
                 </button>
             </div>
+
 
             <!-- Navigation -->
             <nav class="p-4 space-y-2 mt-4">
@@ -79,13 +97,17 @@
     <div class="flex-1 flex flex-col min-w-0 bg-[#eff3f8] relative">
         
         <!-- Top Header -->
-        <header class="h-24 bg-white/80 backdrop-blur-xl border-b border-slate-200 flex items-center justify-between px-8 z-30 shrink-0 sticky top-0">
-            <div class="flex items-center gap-4">
-                <button @click="sidebarOpen = true" x-show="!sidebarOpen" class="text-slate-500 hover:text-slate-800 bg-white p-2.5 rounded-xl shadow-sm border border-slate-200 focus:outline-none transition transform hover:scale-105">
-                    <i class="fa-solid fa-bars text-lg"></i>
+        <header class="h-20 md:h-24 bg-white/80 backdrop-blur-xl border-b border-slate-200 flex items-center justify-between px-4 md:px-8 z-30 shrink-0 sticky top-0">
+            <div class="flex items-center gap-3 md:gap-4">
+                <button @click="sidebarOpen = !sidebarOpen" class="text-slate-500 hover:text-slate-800 bg-white p-2 md:p-2.5 rounded-xl shadow-sm border border-slate-200 focus:outline-none transition transform active:scale-95">
+                    <i class="fa-solid fa-bars-staggered text-lg"></i>
                 </button>
-                <h2 class="text-xl md:text-2xl font-bold text-[#4a3294] tracking-tight hidden sm:block">Sistem Manajemen Pembayaran SPP</h2>
+                <h2 class="text-lg md:text-2xl font-bold text-[#4a3294] tracking-tight truncate max-w-[200px] sm:max-w-none">
+                    <span class="hidden sm:inline">Sistem Manajemen Pembayaran SPP</span>
+                    <span class="sm:hidden">Sistem SPP Petugas</span>
+                </h2>
             </div>
+
 
             <div class="flex items-center gap-6">
                 <!-- Notifications Dropdown -->
@@ -120,16 +142,17 @@
 
                 <!-- User Profile Dropdown -->
                 <div x-data="{ dropdownOpen: false }" class="relative">
-                    <button @click="dropdownOpen = !dropdownOpen" class="flex items-center gap-3 hover:bg-slate-100 p-1.5 pr-4 rounded-full transition-all border border-transparent hover:border-slate-200">
-                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[#362773] to-purple-800 text-white flex items-center justify-center font-bold shadow-md text-sm">
+                    <button @click="dropdownOpen = !dropdownOpen" class="flex items-center gap-2 md:gap-3 hover:bg-slate-100 p-1 md:p-1.5 md:pr-4 rounded-full transition-all border border-transparent hover:border-slate-200">
+                        <div class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-gradient-to-br from-[#362773] to-purple-800 text-white flex items-center justify-center font-bold shadow-md text-xs md:sm">
                             {{ strtoupper(substr(Auth::user()->name ?? 'U', 0, 1)) }}
                         </div>
                         <div class="text-left hidden md:block">
                             <p class="text-sm font-bold text-slate-800 leading-tight">{{ Auth::user()->name ?? 'Pengguna' }}</p>
                             <p class="text-xs font-medium text-slate-500 mt-0.5">{{ ucfirst(Auth::user()->role ?? 'staff') }}</p>
                         </div>
-                        <i class="fa-solid fa-chevron-down text-slate-400 text-xs ml-2 transition-transform duration-200" :class="dropdownOpen ? 'rotate-180' : ''"></i>
+                        <i class="fa-solid fa-chevron-down text-slate-400 text-[10px] md:text-xs ml-1 md:ml-2 transition-transform duration-200" :class="dropdownOpen ? 'rotate-180' : ''"></i>
                     </button>
+
 
                     <div x-show="dropdownOpen" @click.away="dropdownOpen = false" x-cloak
                          x-transition:enter="transition ease-out duration-200"
@@ -163,9 +186,10 @@
         </header>
 
         <!-- Main Content -->
-        <main class="flex-1 overflow-y-auto p-6 md:p-8">
+        <main class="flex-1 overflow-y-auto p-4 md:p-8">
             @yield('content')
         </main>
+
 
         <!-- Floating Help Button -->
         <button class="fixed bottom-8 right-8 w-14 h-14 bg-white text-slate-600 shadow-[0_10px_25px_rgba(0,0,0,0.1)] border border-slate-100 rounded-full flex items-center justify-center hover:scale-110 hover:text-indigo-600 transition-all duration-300 z-50 group">

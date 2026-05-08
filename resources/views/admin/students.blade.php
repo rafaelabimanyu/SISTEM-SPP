@@ -12,87 +12,94 @@
     @endif
 
     <!-- Header -->
-    <div class="mb-8 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+    <div class="mb-8 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
         <div>
-            <h1 class="text-3xl font-extrabold text-[#362773] tracking-tight">Data Master Siswa</h1>
-            <p class="text-slate-500 mt-1.5 font-medium">Kelola database siswa, penempatan kelas, dan kenaikan kelas</p>
+            <h1 class="text-2xl md:text-4xl font-black text-[#362773] tracking-tight">Data Master Siswa</h1>
+            <p class="text-slate-500 mt-1.5 font-medium text-sm md:text-base">Kelola database siswa, penempatan kelas, dan kenaikan kelas</p>
         </div>
-        <div class="flex flex-wrap items-center gap-3">
-            <button onclick="document.getElementById('addModal').classList.remove('hidden')" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-5 py-2.5 rounded-xl font-bold shadow-lg shadow-indigo-500/30 transition-all flex items-center gap-2 transform hover:-translate-y-0.5 text-sm">
+        <div class="flex items-center gap-3">
+            <button onclick="document.getElementById('addModal').classList.remove('hidden')" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3.5 rounded-2xl font-bold shadow-lg shadow-indigo-600/20 transition-all flex items-center justify-center gap-2 active:scale-95 text-sm md:text-base">
                 <i class="fa-solid fa-user-plus"></i> Tambah Siswa
             </button>
         </div>
     </div>
 
+
     <!-- Filters & Stats -->
-    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
-        <div class="lg:col-span-3 bg-white rounded-[2rem] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 flex flex-col md:flex-row gap-4 items-center">
-            <form method="GET" action="{{ route('admin.students') }}" class="flex flex-col md:flex-row gap-4 items-center w-full">
-                <div class="relative flex-1 w-full">
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 md:gap-6 mb-8 md:mb-10">
+        <div class="lg:col-span-3 bg-white rounded-3xl p-5 md:p-6 shadow-sm border border-slate-100">
+            <form method="GET" action="{{ route('admin.students') }}" class="flex flex-col md:flex-row gap-4 w-full">
+                <div class="relative flex-1">
                     <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari NISN atau Nama Siswa..." class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:outline-none focus:border-indigo-500 focus:bg-white transition-all">
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari NISN atau Nama..." class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold focus:outline-none focus:border-indigo-500 focus:bg-white transition-all">
                 </div>
-                <div class="flex gap-4 w-full md:w-auto">
-                    <select name="class_id" onchange="this.form.submit()" class="flex-1 md:w-40 bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-600 focus:outline-none shadow-sm cursor-pointer">
+                <div class="grid grid-cols-2 gap-4">
+                    <select name="class_id" onchange="this.form.submit()" class="bg-white border border-slate-100 rounded-2xl px-4 py-3 text-sm font-bold text-slate-600 focus:outline-none shadow-sm cursor-pointer hover:border-indigo-200 transition-colors">
                         <option value="all">Semua Kelas</option>
                         @foreach($classes as $c)
                             <option value="{{ $c->id }}" {{ request('class_id') == $c->id ? 'selected' : '' }}>{{ $c->name }}</option>
                         @endforeach
                     </select>
-                    <select name="year" onchange="this.form.submit()" class="flex-1 md:w-40 bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-600 focus:outline-none shadow-sm cursor-pointer">
-                        <option value="all">Semua Angkatan</option>
+                    <select name="year" onchange="this.form.submit()" class="bg-white border border-slate-100 rounded-2xl px-4 py-3 text-sm font-bold text-slate-600 focus:outline-none shadow-sm cursor-pointer hover:border-indigo-200 transition-colors">
+                        <option value="all">Angkatan</option>
                         @foreach($years as $y)
                             <option value="{{ $y }}" {{ request('year') == $y ? 'selected' : '' }}>{{ $y }}</option>
                         @endforeach
                     </select>
                 </div>
-                <button type="submit" class="hidden">Cari</button>
             </form>
         </div>
-        <div class="bg-indigo-900 rounded-[2rem] p-6 shadow-lg shadow-indigo-900/20 text-white flex flex-col justify-center relative overflow-hidden">
-            <div class="absolute -right-6 -top-6 text-white/5 text-8xl"><i class="fa-solid fa-users"></i></div>
-            <p class="text-indigo-200 text-sm font-bold uppercase tracking-wider mb-1 relative z-10">Total Siswa Aktif</p>
-            <h3 class="text-4xl font-black relative z-10">{{ $students->count() }}</h3>
+        <div class="bg-[#362773] rounded-3xl p-6 shadow-lg shadow-indigo-900/10 text-white flex flex-col justify-center relative overflow-hidden group">
+            <div class="absolute -right-4 -top-4 text-white/5 text-7xl transform group-hover:scale-110 transition-transform"><i class="fa-solid fa-users"></i></div>
+            <p class="text-indigo-200/60 text-[10px] font-bold uppercase tracking-widest mb-1 relative z-10">Total Siswa Aktif</p>
+            <h3 class="text-3xl md:text-4xl font-black relative z-10">{{ $students->count() }}</h3>
         </div>
     </div>
 
+
     <!-- Student Cards Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         @forelse($students as $s)
-            <div class="bg-white rounded-[2rem] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.03)] border border-slate-100 hover:border-indigo-200 transition-all relative">
+            <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 hover:border-indigo-100 hover:shadow-md transition-all relative group flex flex-col">
                 <!-- Actions dropdown -->
-                <div class="absolute top-4 right-4 flex gap-1">
+                <div class="absolute top-4 right-4 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                     <button onclick="openEditModal({{ $s->id }}, '{{ addslashes($s->name) }}', '{{ $s->nisn }}', '{{ $s->nis }}', '{{ $s->class_room_id }}', '{{ $s->academic_year }}', '{{ $s->phone }}', '{{ addslashes($s->address) }}')" 
-                            class="w-8 h-8 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-full flex items-center justify-center transition-colors">
+                            class="w-9 h-9 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl flex items-center justify-center transition-all">
                         <i class="fa-solid fa-pen text-xs"></i>
                     </button>
                     <button onclick="openDeleteModal({{ $s->id }}, '{{ addslashes($s->name) }}')"
-                            class="w-8 h-8 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-full flex items-center justify-center transition-colors">
+                            class="w-9 h-9 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl flex items-center justify-center transition-all">
                         <i class="fa-solid fa-trash text-xs"></i>
                     </button>
                 </div>
 
-                <div class="flex items-center gap-4 mb-5">
-                    <div class="w-14 h-14 rounded-full bg-gradient-to-br from-blue-400 to-indigo-600 text-white flex items-center justify-center font-bold text-xl shadow-md">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-14 h-14 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-black text-xl shadow-sm border border-indigo-100 group-hover:bg-indigo-600 group-hover:text-white transition-all">
                         {{ substr($s->name, 0, 1) }}
                     </div>
-                    <div>
-                        <h3 class="font-bold text-slate-800 text-lg leading-tight">{{ $s->name }}</h3>
-                        <p class="text-xs font-bold text-indigo-500">NISN: {{ $s->nisn }}</p>
+                    <div class="min-w-0 pr-16">
+                        <h3 class="font-bold text-slate-800 text-lg leading-tight truncate">{{ $s->name }}</h3>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">NISN: {{ $s->nisn }}</p>
                     </div>
                 </div>
                 
-                <div class="bg-slate-50 rounded-xl p-4 mb-4 border border-slate-100 space-y-2">
-                    <div class="flex justify-between text-sm"><span class="text-slate-500">Kelas</span><span class="font-bold text-slate-800">{{ $s->classRoom->name }}</span></div>
-                    <div class="flex justify-between text-sm"><span class="text-slate-500">Angkatan</span><span class="font-bold text-slate-800">{{ $s->academic_year }}</span></div>
-                    <div class="flex justify-between text-sm"><span class="text-slate-500">Telepon</span><span class="font-bold text-slate-800">{{ $s->phone ?? '-' }}</span></div>
+                <div class="bg-slate-50/50 rounded-2xl p-4 mb-6 border border-slate-50 space-y-3 flex-1">
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="text-slate-400 font-medium">Kelas</span>
+                        <span class="font-bold text-slate-800">{{ $s->classRoom->name }}</span>
+                    </div>
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="text-slate-400 font-medium">Angkatan</span>
+                        <span class="font-bold text-slate-800">{{ $s->academic_year }}</span>
+                    </div>
                 </div>
 
                 <button onclick="openDetailModal('{{ addslashes($s->name) }}', '{{ $s->nisn }}', '{{ $s->nis }}', '{{ $s->classRoom->name }}', '{{ $s->academic_year }}', '{{ $s->phone }}', '{{ addslashes($s->address) }}')" 
-                        class="w-full bg-white border-2 border-slate-100 hover:border-indigo-600 hover:text-indigo-600 text-slate-600 font-bold py-2.5 rounded-xl transition-colors text-sm">
-                    Lihat Detail
+                        class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 rounded-2xl transition-all text-sm shadow-lg shadow-slate-900/10 active:scale-95">
+                    Lihat Profil Siswa
                 </button>
             </div>
+
         @empty
             <div class="col-span-3 py-16 text-center text-slate-400 font-medium">
                 <i class="fa-solid fa-users-slash text-4xl mb-3 block text-slate-300"></i>
@@ -102,25 +109,25 @@
     </div>
 
     <!-- DETAIL MODAL -->
-    <div id="detailModal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4">
-        <div onclick="document.getElementById('detailModal').classList.add('hidden')" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
-        <div class="relative bg-white rounded-[2rem] shadow-2xl w-full max-w-sm p-8 z-10">
-            <button onclick="document.getElementById('detailModal').classList.add('hidden')" class="absolute top-5 right-5 w-9 h-9 bg-slate-100 hover:bg-slate-200 rounded-full flex items-center justify-center transition"><i class="fa-solid fa-xmark text-slate-500"></i></button>
-            <div class="w-16 h-16 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center font-bold text-2xl shadow-lg mx-auto mb-4" id="detailInitial">A</div>
-            <h2 class="text-xl font-extrabold text-slate-800 text-center mb-1" id="detailName"></h2>
-            <p class="text-indigo-500 text-xs font-bold text-center mb-6" id="detailNisn"></p>
-            <div class="space-y-3 divide-y divide-slate-100 text-sm">
-                <div class="flex justify-between pt-3"><span class="text-slate-500">NIS</span><span class="font-bold" id="detailNis"></span></div>
-                <div class="flex justify-between pt-3"><span class="text-slate-500">Kelas</span><span class="font-bold" id="detailClass"></span></div>
-                <div class="flex justify-between pt-3"><span class="text-slate-500">Angkatan</span><span class="font-bold" id="detailYear"></span></div>
-                <div class="flex justify-between pt-3"><span class="text-slate-500">Telepon</span><span class="font-bold" id="detailPhone"></span></div>
-                <div class="pt-3"><span class="text-slate-500 block mb-1">Alamat</span><span class="font-medium text-slate-700" id="detailAddress"></span></div>
+    <div id="detailModal" class="hidden fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div onclick="document.getElementById('detailModal').classList.add('hidden')" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"></div>
+        <div class="relative bg-white rounded-t-[2rem] sm:rounded-3xl shadow-2xl w-full max-w-md p-6 md:p-10 z-10 animate-slide-up sm:animate-none">
+            <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-8 sm:hidden"></div>
+            <button onclick="document.getElementById('detailModal').classList.add('hidden')" class="absolute top-6 right-6 w-10 h-10 bg-slate-50 hover:bg-slate-100 rounded-xl hidden sm:flex items-center justify-center transition"><i class="fa-solid fa-xmark text-slate-400"></i></button>
+            <div class="w-20 h-20 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-black text-3xl shadow-sm mx-auto mb-6" id="detailInitial">A</div>
+            <h2 class="text-2xl font-black text-slate-800 text-center mb-1 tracking-tight" id="detailName"></h2>
+            <p class="text-indigo-500 text-[10px] font-bold text-center mb-8 uppercase tracking-widest" id="detailNisn"></p>
+            <div class="space-y-4 mb-10">
+                <div class="flex justify-between items-center pb-3 border-b border-slate-50"><span class="text-xs font-bold text-slate-400 uppercase tracking-widest">NIS</span><span class="font-bold text-slate-800" id="detailNis"></span></div>
+                <div class="flex justify-between items-center pb-3 border-b border-slate-50"><span class="text-xs font-bold text-slate-400 uppercase tracking-widest">KELAS</span><span class="font-bold text-slate-800" id="detailClass"></span></div>
+                <div class="flex justify-between items-center pb-3 border-b border-slate-50"><span class="text-xs font-bold text-slate-400 uppercase tracking-widest">ANGKATAN</span><span class="font-bold text-slate-800" id="detailYear"></span></div>
+                <div class="flex justify-between items-center pb-3 border-b border-slate-50"><span class="text-xs font-bold text-slate-400 uppercase tracking-widest">TELEPON</span><span class="font-bold text-slate-800" id="detailPhone"></span></div>
+                <div class="pt-2"><span class="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2">ALAMAT</span><span class="text-sm font-medium text-slate-600 leading-relaxed italic" id="detailAddress"></span></div>
             </div>
-            <div class="mt-8">
-                <button onclick="document.getElementById('detailModal').classList.add('hidden')" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 rounded-xl transition text-sm">Tutup</button>
-            </div>
+            <button onclick="document.getElementById('detailModal').classList.add('hidden')" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 rounded-2xl transition shadow-lg active:scale-95">Tutup Profil</button>
         </div>
     </div>
+
 
     <!-- ADD MODAL -->
     <div id="addModal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4">
